@@ -27,12 +27,12 @@ class LinkedList {
         if (this.head == null) {
             // Se for o primeiro elemento da lista
             this.head = newNode;
-        } else {
+        } else if (this.tail) {
             // Aponta o elemento que atualmente é o ultimo para o novo
             // Define o novo elemento como next do tail atual
             // tail.next -> newNode
             // Tail nunca será null aqui, pois sempre que há um head há também um tail, e vice-versa.
-            this.tail!.next = newNode;
+            this.tail.next = newNode;
         }
         
         // Define o novo elemento como sendo o ultimo
@@ -67,7 +67,8 @@ class LinkedList {
             return;
         }
 
-        let previous, next: ListNode | null = null;
+        let previous: ListNode | null = null;
+        let next: ListNode | null = null;
         let current = this.head;
 
         while (current != null) {
