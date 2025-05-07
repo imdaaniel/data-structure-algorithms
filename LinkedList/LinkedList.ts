@@ -1,8 +1,8 @@
 class ListNode {
-    public value: number;
+    public value: any;
     public next: ListNode | null;
 
-    constructor(value: number) {
+    constructor(value: any) {
         this.value = value;
         this.next = null;
     }
@@ -12,16 +12,14 @@ class LinkedList {
     private head: ListNode | null;
     private tail: ListNode | null;
     private length: number;
-    public alwaysShowList: boolean = false;
     
-    constructor(alwaysShowList: boolean = false) {
+    constructor() {
         this.head = null;
         this.tail = null;
         this.length = 0;
-        this.alwaysShowList = alwaysShowList;
     }
 
-    public addNode(value: number) {
+    public addNode(value: any) {
         const newNode = new ListNode(value);
         
         if (this.head == null) {
@@ -41,23 +39,50 @@ class LinkedList {
 
         // Incrementa a contagem de nodes na lista
         this.length += 1;
-
-        if (this.alwaysShowList) {
-            return this.getList();
-        }
     }
 
-    public addMultipleNodes(values: number[]) {
+    public addMultipleNodes(values: any[]) {
         values.forEach(value => this.addNode(value));
     }
 
-    public removeNode(node: ListNode, previousNode: ListNode) {
-        previousNode.next = node.next;
-        this.length -= 1;
-
-        if (this.alwaysShowList) {
-            return this.getList();
+    public removeNodeByValue(valueToBeRemoved: any): boolean {
+        if (this.head == null) {
+            return false;
         }
+
+        // Se o valor a ser removido for o primeiro elemento na lista
+        if (this.head.value == valueToBeRemoved) {
+            this.head = this.head.next;
+
+            // Se a lista so tinha 1 elemento, tanto head quanto tail faziam referencia a esse unico elemento
+            // Portanto, se avancei o head pra nulo, preciso avancar o tail tambem, ja que agora nao existe ninguem na lista
+            if (this.head == null) {
+                this.tail = null
+            }
+
+            this.length -= 1;
+            return true;
+        }
+
+        let currentNode = this.head;
+
+        while (currentNode.next != null) {
+            if (currentNode.next.value == valueToBeRemoved) {
+                currentNode.next = currentNode.next!.next;
+
+                if (currentNode.next == this.tail) {
+                    this.tail = currentNode;
+                }
+                
+                this.length -= 1;
+                return true;
+            }
+
+            // Avançando o ponteiro do currentNode
+            currentNode = currentNode.next;
+        }
+
+        return false;
     }
 
     public reverseList() {
@@ -86,23 +111,16 @@ class LinkedList {
         const aux = this.head;
         this.head = previous // tambem poderia ser self.head = self.tail
         this.tail = aux;
-
-        if (this.alwaysShowList) {
-            return this.getList();
-        }
     }
 
-    public getList() {
+    public printList() {
         const head = this.head != null ? this.head.value : null;
         const tail = this.tail != null ? this.tail.value : null;
 
         let currentNode = this.head;
         let nextNodeValue: number | null;
 
-        console.log(`
-            Head: ${head}
-            Tail: ${tail}
-            Length: ${this.length}`);
+        console.log(`\nHead: ${head} | Tail: ${tail} | Length: ${this.length}`);
 
         while (currentNode != null) {
             nextNodeValue = currentNode.next != null ? currentNode.next.value : null;
@@ -110,21 +128,73 @@ class LinkedList {
             currentNode = currentNode.next;
         }
     }
+
+    public toArray(): any[] {
+        let arrayList: any[] = [];
+        let currentNode = this.head;
+
+        while (currentNode != null) {
+            arrayList.push(currentNode.value);
+            currentNode = currentNode.next;
+        }
+
+        return arrayList;
+    }
+
+    public getHeadValue(): any | null {
+        return this.head ? this.head.value : null;
+    }
+
+    public getTailValue(): any | null {
+        return this.tail ? this.tail.value : null;
+    }
+
+    public getLength(): number {
+        return this.length;
+    }
 }
 
-let myLinkedList = new LinkedList(true);
+let myLinkedList = new LinkedList();
 
-console.log('Adicionando valor 1');
-myLinkedList.addNode(1);
+console.log('Adicionando abacate');
+myLinkedList.addNode('abacate');
 
-console.log('Adicionando valor 2');
-myLinkedList.addNode(2);
+console.log('Removendo pera');
+console.log(myLinkedList.removeNodeByValue('pera'));
 
-console.log('Adicionando valor 3');
-myLinkedList.addNode(3);
-
-console.log('Adicionando valor 4, 5 e 6');
-myLinkedList.addMultipleNodes([4,5,6]);
+console.log('Adicionando banana e maçã');
+myLinkedList.addMultipleNodes(['banana', 'maçã']);
 
 console.log('Revertendo lista');
 myLinkedList.reverseList();
+
+myLinkedList.printList();
+
+
+
+// console.log('Adicionando valor 1');
+// myLinkedList.addNode(1);
+
+// console.log('Adicionando valor 2');
+// myLinkedList.addNode(2);
+
+// console.log('Adicionando valor 3');
+// myLinkedList.addNode(3);
+
+// console.log('Adicionando valor 4, 5 e 6');
+// myLinkedList.addMultipleNodes([4,5,6]);
+
+// console.log('Revertendo lista');
+// myLinkedList.reverseList();
+
+// console.log('Removendo número 3');
+// myLinkedList.removeNodeByValue(3);
+
+// console.log('Removendo número 54 (não está na lista)');
+// myLinkedList.removeNodeByValue(54);
+
+// console.log(myLinkedList.toArray());
+// console.log(`Head: ${myLinkedList.getHeadValue()}`);
+// console.log(`Tail: ${myLinkedList.getTailValue()}`);
+// console.log(`Length: ${myLinkedList.getLength()}`);
+
