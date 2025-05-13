@@ -2,7 +2,7 @@ class ListNode {
     public value: any;
     public next: ListNode | null;
 
-    constructor(value: any) {
+    constructor(value: any, next: ListNode | null = null) {
         this.value = value;
         this.next = null;
     }
@@ -113,6 +113,53 @@ class LinkedList {
         this.tail = aux;
     }
 
+    public insertAtIndex(index: number, value: any): boolean {
+        if (index < 0 || index > this.length) {
+            return false;
+        }
+
+        const newNode = new ListNode(value, this.head);
+        this.length += 1;
+
+        if (index == 0) {
+            newNode.next = this.head;
+            this.head = newNode;
+            return true;
+        }
+
+        if (index == this.length) {
+            if (this.tail) {
+                this.tail.next = newNode
+            }
+            this.tail = newNode;
+            return true;
+        }
+
+        let currentNode = this.head!;
+
+        for (let i = 0; i < index - 1; i++) {
+            currentNode = currentNode.next!;
+        }
+
+        const next = currentNode.next;
+        currentNode.next = newNode;
+        newNode.next = next;
+
+        return true;
+    }
+
+    public removeAtIndex(index: number): boolean {
+        if (index < 0 || index > this.length) {
+            return false;
+        }
+
+        this.length -= 1;
+
+        // todo
+
+        return true;
+    }
+
     public printList() {
         const head = this.head != null ? this.head.value : null;
         const tail = this.tail != null ? this.tail.value : null;
@@ -141,12 +188,12 @@ class LinkedList {
         return arrayList;
     }
 
-    public getHeadValue(): any | null {
-        return this.head ? this.head.value : null;
+    public getHead(): any | null {
+        return this.head ? [this.head.value, this.head.next] : null;
     }
 
-    public getTailValue(): any | null {
-        return this.tail ? this.tail.value : null;
+    public getTail(): any | null {
+        return this.tail ? [this.tail.value, this.tail.next] : null;
     }
 
     public getLength(): number {
@@ -156,44 +203,33 @@ class LinkedList {
 
 let myLinkedList = new LinkedList();
 
-console.log('Adicionando abacate');
-myLinkedList.addNode('abacate');
-
-console.log('Removendo pera');
-console.log(myLinkedList.removeNodeByValue('pera'));
-
-console.log('Adicionando banana e maçã');
-myLinkedList.addMultipleNodes(['banana', 'maçã']);
-
-console.log('Revertendo lista');
-myLinkedList.reverseList();
-
+console.log('Adicionando A');
+myLinkedList.addNode('A');
 myLinkedList.printList();
 
+console.log('Removendo D', console.log(myLinkedList.removeNodeByValue('D')));
 
+console.log('Adicionando B e C');
+myLinkedList.addMultipleNodes(['B', 'C']);
+myLinkedList.printList();
 
-// console.log('Adicionando valor 1');
-// myLinkedList.addNode(1);
+console.log('Adicionando aaa no inicio');
+console.log(myLinkedList.insertAtIndex(0, 'aaa'));
+myLinkedList.printList();
 
-// console.log('Adicionando valor 2');
-// myLinkedList.addNode(2);
+console.log('Adicionando zzz no final');
+console.log(myLinkedList.insertAtIndex(myLinkedList.getLength(), 'zzz'));
+myLinkedList.printList();
 
-// console.log('Adicionando valor 3');
-// myLinkedList.addNode(3);
-
-// console.log('Adicionando valor 4, 5 e 6');
-// myLinkedList.addMultipleNodes([4,5,6]);
+console.log('Adicionando ESTOU NO MEIO na posicao 2');
+console.log(myLinkedList.insertAtIndex(2, 'ESTOU NO MEIO'));
+myLinkedList.printList();
 
 // console.log('Revertendo lista');
 // myLinkedList.reverseList();
 
-// console.log('Removendo número 3');
-// myLinkedList.removeNodeByValue(3);
+// myLinkedList.printList();
 
-// console.log('Removendo número 54 (não está na lista)');
-// myLinkedList.removeNodeByValue(54);
-
-// console.log(myLinkedList.toArray());
 // console.log(`Head: ${myLinkedList.getHeadValue()}`);
 // console.log(`Tail: ${myLinkedList.getTailValue()}`);
 // console.log(`Length: ${myLinkedList.getLength()}`);
